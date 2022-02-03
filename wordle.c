@@ -128,57 +128,50 @@ string get_guess(int wordsize) {
     return guess;
 }
 
-int check_word(string guess, int wordsize, int *status, string choice) {
-    int j, i = 0, score = 0;
+int check_word(string guess, int wordsize, int *status, string choice)
+{
+    int i ,j ,score = j= 0;
 
-    // for cheat -> printf("choice : %s\n",choice);
+    memset(status, WRONG, wordsize * sizeof(status));
 
-    memset(status, WRONG, sizeof(status) * wordsize);
-
-    while (choice[i] != 0 && i < wordsize) 
+    while (*(choice + j)) 
     {
-        j = 0;
-        while (guess[j] != 0 && j < wordsize) 
+        for (i = 0; *(guess + i); ++i) 
         {
-            if (guess[j] == choice[i]) 
+            if (*(guess + i) == *(choice + j)) 
             {
-                if (j == i) 
-                {
-                    status[j] = EXACT;
-                    score++;
-                } else if (status[j] == WRONG) {
-                    status[j] = CLOSE;
+                if (j == i) {
+                    *(status + i) = EXACT;
+                    ++score;
+                } else if (*(status + i) == WRONG) {
+                    *(status + i) = CLOSE;
                 }
             }
-            j++;
         }
-        i++;
+        ++j;
     }
-
-    return score * EXACT;
+    return (int) (EXACT * score);
 }
 
-void print_word(string guess, int wordsize, int status[]) {
-    int i = 0;
-    while (guess[i] != 0 && i < wordsize) 
-    {
-        switch (status[i]) 
-        {
-            case EXACT:
-                printf(GREEN "%c" RESET, guess[i]);
-                break;
+void print_word(string guess, int wordsize, int *status)
+{
 
-            case CLOSE:
-                printf(YELLOW "%c" RESET, guess[i]);
-                break;
+	int i = 0;
+    while(guess[i] != 0 && i < wordsize)
+	{
+		switch (status[i])
+		{
+			case EXACT: printf(GREEN"%c"RESET,guess[i]);
+			   break;
 
-            default:
-                printf(RED "%c" RESET, guess[i]);
-                break;
-        }
-        i++;
-    }
+			case CLOSE: printf(YELLOW"%c"RESET,guess[i]);
+			   break;
 
+			default: printf(RED"%c"RESET,guess[i]);
+			break;
+		}
+		i++;
+	}
     printf("\n");
     return;
 }
