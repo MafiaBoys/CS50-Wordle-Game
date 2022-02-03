@@ -135,11 +135,15 @@ int check_word(string guess, int wordsize, int *status, string choice) {
 
     memset(status, WRONG, sizeof(status) * wordsize);
 
-    while (choice[i] != 0 && i < wordsize) {
+    while (choice[i] != 0 && i < wordsize) 
+    {
         j = 0;
-        while (guess[j] != 0 && j < wordsize) {
-            if (guess[j] == choice[i]) {
-                if (j == i) {
+        while (guess[j] != 0 && j < wordsize) 
+        {
+            if (guess[j] == choice[i]) 
+            {
+                if (j == i) 
+                {
                     status[j] = EXACT;
                     score++;
                 } else if (status[j] == WRONG) {
@@ -156,8 +160,10 @@ int check_word(string guess, int wordsize, int *status, string choice) {
 
 void print_word(string guess, int wordsize, int status[]) {
     int i = 0;
-    while (guess[i] != 0 && i < wordsize) {
-        switch (status[i]) {
+    while (guess[i] != 0 && i < wordsize) 
+    {
+        switch (status[i]) 
+        {
             case EXACT:
                 printf(GREEN "%c" RESET, guess[i]);
                 break;
