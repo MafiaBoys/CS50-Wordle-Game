@@ -1,5 +1,6 @@
-// by MSx4 || mafiaBoys
+// by MSx4 & mafiaBoys
 // Date Created : 3 Feb 2022 00:43:00 GMT
+// CopyLeft (ButterC) all right changed
 
 #include <stdio.h>
 #include <stdlib.h>
