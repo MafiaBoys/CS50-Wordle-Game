@@ -30,149 +30,151 @@ int check_word(string guess, int wordsize, int status[], string choice);
 void print_word(string guess, int wordsize, int status[]);
 
 void usage(char *exce) {
-    fprintf(stdout, "Usage: %s wordsize\n", exce);
-    exit(1);
+        fprintf(stdout, "Usage: %s wordsize\n", exce);
+        exit(1);
 }
 
 int main(int argc, string argv[]) {
-    // ensure proper usage
-    // TODO #1
+        // ensure proper usage
+        // TODO #1
 
-    int wordsize = 0;
+        int wordsize = 0;
 
-    // ensure argv[1] is either 5, 6, 7, or 8 and store that value in wordsize
-    // instead
-    if (argc > 1) {
-        wordsize = (int)strtoul(*(argv + 1), NULL, 16);
+        // ensure argv[1] is either 5, 6, 7, or 8 and store that value in
+        // wordsize instead
+        if (argc > 1) {
+                wordsize = (int)strtoul(*(argv + 1), NULL, 16);
 
-    } else
-        usage(*(argv + 0));
+        } else
+                usage(*(argv + 0));
 
-    if (wordsize < 5 || wordsize > 8) {
-        fprintf(stdout, "Error: wordsize must be either 5, 6, 7, or 8\n");
-        return 1;
-    }
-
-    // open correct file, each file has exactly LISTSIZE words
-
-    char wl_filename[6];
-    sprintf(wl_filename, "%i.txt", wordsize);
-    FILE *wordlist = fopen(wl_filename, "r");
-
-    if (wordlist == NULL) {
-        printf("Error opening file %s.\n", wl_filename);
-
-        return 1;
-    }
-
-    // load word file into an array of size LISTSIZE
-    char options[LISTSIZE][wordsize + 1];
-
-    int i;
-    for (i = 0; i < LISTSIZE; i++) {
-        fscanf(wordlist, "%s", options[i]);
-    }
-
-    // pseudorandomly select a word for this game
-    srand(time(NULL));
-
-    // bugs
-    string choice = options[rand() % LISTSIZE];
-
-    // allow one more guess than the length of the word
-    int guesses = wordsize + 1;
-    bool won = false;
-
-    // print greeting, using ANSI color codes to demonstrate
-    printf(GREEN "This is WORDLE50" RESET "\n");
-    printf("You have %i tries to guess the %i-letter word I'm thinking of\n",
-           guesses, wordsize);
-
-    // main game loop, one iteration for each guess
-    for (i = 0; i < guesses; i++) {
-        // obtain user's guess
-        string guess = get_guess(wordsize);
-
-        // array to hold guess status, initially set to zero
-        int status[wordsize];
-
-        // set all elements of status array initially to 0, aka WRONG
-        // TODO #4
-
-        // Calculate score for the guess
-        int score = check_word(guess, wordsize, status, choice);
-
-        printf("Guess %i: ", i + 1);
-        // Print the guess
-        print_word(guess, wordsize, status);
-
-        // if they guessed it exactly right, set terminate loop
-        if (score == wordsize * EXACT) {
-            won = true;
-            break;
+        if (wordsize < 5 || wordsize > 8) {
+                fprintf(stdout,
+                        "Error: wordsize must be either 5, 6, 7, or 8\n");
+                return 1;
         }
-    }
 
-    if (won == true) {
-        printf("You won!\n");
-    }
+        // open correct file, each file has exactly LISTSIZE words
 
-    return 0;
+        char wl_filename[6];
+        sprintf(wl_filename, "%i.txt", wordsize);
+        FILE *wordlist = fopen(wl_filename, "r");
+
+        if (wordlist == NULL) {
+                printf("Error opening file %s.\n", wl_filename);
+
+                return 1;
+        }
+
+        // load word file into an array of size LISTSIZE
+        char options[LISTSIZE][wordsize + 1];
+
+        int i;
+        for (i = 0; i < LISTSIZE; i++) {
+                fscanf(wordlist, "%s", options[i]);
+        }
+
+        // pseudorandomly select a word for this game
+        srand(time(NULL));
+
+        // bugs
+        string choice = options[rand() % LISTSIZE];
+
+        // allow one more guess than the length of the word
+        int guesses = wordsize + 1;
+        bool won = false;
+
+        // print greeting, using ANSI color codes to demonstrate
+        printf(GREEN "This is WORDLE50" RESET "\n");
+        printf(
+            "You have %i tries to guess the %i-letter word I'm thinking of\n",
+            guesses, wordsize);
+
+        // main game loop, one iteration for each guess
+        for (i = 0; i < guesses; i++) {
+                // obtain user's guess
+                string guess = get_guess(wordsize);
+
+                // array to hold guess status, initially set to zero
+                int status[wordsize];
+
+                // set all elements of status array initially to 0, aka WRONG
+                // TODO #4
+
+                // Calculate score for the guess
+                int score = check_word(guess, wordsize, status, choice);
+
+                printf("Guess %i: ", i + 1);
+                // Print the guess
+                print_word(guess, wordsize, status);
+
+                // if they guessed it exactly right, set terminate loop
+                if (score == wordsize * EXACT) {
+                        won = true;
+                        break;
+                }
+        }
+
+        if (won == true) {
+                printf("You won!\n");
+        }
+
+        return 0;
 }
 
 string get_guess(int wordsize) {
-    string guess = "";
-    do {
-        guess = get_string("Input a %d-litters word : ", wordsize);
-    } while (strlen(guess) != wordsize);
+        string guess = "";
+        do {
+                guess = get_string("Input a %d-litters word : ", wordsize);
+        } while (strlen(guess) != wordsize);
 
-    return guess;
+        return guess;
 }
 
-int check_word(string guess, int wordsize, int *status, string choice)
-{
-    int i ,j ,score = j= 0;
+int check_word(string guess, int wordsize, int *status, string choice) {
+        int i, j, score = j = 0;
 
-    memset(status, WRONG, wordsize * sizeof(status));
+        memset(status, WRONG, wordsize * sizeof(status));
 
-    while (*(choice + j)) 
-    {
-        for (i = 0; *(guess + i); ++i) 
-        {
-            if (*(guess + i) == *(choice + j)) 
-            {
-                if (j == i) {
-                    *(status + i) = EXACT;
-                    ++score;
-                } else if (*(status + i) == WRONG) {
-                    *(status + i) = CLOSE;
-                }
-            }
-        }
-        ++j;
-    }
-    return (int) (EXACT * score);
-}
-
-void print_word(string guess, int wordsize, int *status)
-{
-
-	int i = 0;
-    while(guess[i] != 0 && i < wordsize)
-	{
-		switch (status[i])
+        while (*(choice + j)) {
+                for (i = 0; *(guess + i); ++i) 
 		{
-			case EXACT: printf(GREEN"%c"RESET,guess[i]);
-			   break;
+                        if (*(guess + i) == *(choice + j)) 
+			{
+                                if (j == i) 
+				{
+                                        *(status + i) = EXACT;
+                                        ++score;
+                                } else if (*(status + i) == WRONG) 
+				{
+                                        *(status + i) = CLOSE;
+                                }
+                        }
+                }
+                ++j;
+        }
+        return (int)(EXACT * score);
+}
 
-			case CLOSE: printf(YELLOW"%c"RESET,guess[i]);
-			   break;
+void print_word(string guess, int wordsize, int *status) {
+        int i = 0;
+        while (guess[i] != 0 && i < wordsize) {
+                switch (status[i]) 
+		{
+                        case EXACT:
+                                printf(GREEN "%c" RESET, guess[i]);
+                                break;
 
-			default: printf(RED"%c"RESET,guess[i]);
-			break;
-		}
-		i++;
-	}
-    printf("\n");
-    return;
+                        case CLOSE:
+                                printf(YELLOW "%c" RESET, guess[i]);
+                                break;
+
+                        default:
+                                printf(RED "%c" RESET, guess[i]);
+                                break;
+                }
+                i++;
+        }
+        printf("\n");
+        return;
 }
